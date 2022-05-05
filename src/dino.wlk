@@ -12,6 +12,7 @@ object juego{
 		game.addVisual(cactus)
 		game.addVisual(dino)
 		game.addVisual(reloj)
+		game.addVisual(arbol)
 	
 		keyboard.space().onPressDo{ self.jugar()}
 		
@@ -23,6 +24,7 @@ object juego{
 		dino.iniciar()
 		reloj.iniciar()
 		cactus.iniciar()
+		arbol.iniciar()
 	}
 	
 	method jugar(){
@@ -39,6 +41,7 @@ object juego{
 		game.addVisual(gameOver)
 		cactus.detener()
 		reloj.detener()
+		arbol.detener()
 		dino.morir()
 	}
 	
@@ -96,7 +99,35 @@ object cactus {
 		game.removeTickEvent("moverCactus")
 	}
 }
+/*--------------------------------- Punto 2 creo objeto arbol--------------------------------------------- */
 
+object arbol {
+	 
+	const posicionInicial = game.at(game.width()-1,suelo.position().y())
+	var position = posicionInicial
+
+	method image() = "arbol.png"
+	method position() = position
+	
+	method iniciar(){
+		position = posicionInicial
+		game.onTick(velocidad,"moverArbol",{self.mover()})
+	}
+	
+	method mover(){
+		position = position.left(2)
+		if (position.x() == -1)
+			position = posicionInicial
+	}
+	
+	method chocar(){
+		reloj.iniciar()
+	}
+    method detener(){
+		game.removeTickEvent("moverArbol")
+	}
+}
+/*------------------------------------------------------------------------------ */
 object suelo{
 	
 	method position() = game.origin().up(1)
@@ -104,7 +135,7 @@ object suelo{
 	method image() = "suelo.png"
 }
 
-
+/*------------- A velocidad lo multiplico por 4 ----------- */
 object dino {
 	var vivo = true
 	var position = game.at(1,suelo.position().y())
@@ -115,7 +146,7 @@ object dino {
 	method saltar(){
 		if(position.y() == suelo.position().y()) {
 			self.subir()
-			game.schedule(velocidad*3,{self.bajar()})
+			game.schedule(velocidad*4,{self.bajar()})
 		}
 	}
 	
